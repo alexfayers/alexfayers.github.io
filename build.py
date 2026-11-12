@@ -224,6 +224,7 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
         "FROG": inline("frog.gif", "image/gif"),
         "FONT_NORMAL": inline("fonts/archivo-latin-wdth-normal.woff2", "font/woff2"),
         "FONT_ITALIC": inline("fonts/archivo-latin-wdth-italic.woff2", "font/woff2"),
+        "FONT_NAMES": inline("fonts/bebas-neue-latin-400-normal.woff2", "font/woff2"),
         "FIREWORKS": fireworks(),
         "BURST": burst,
         "ZIG": zig,

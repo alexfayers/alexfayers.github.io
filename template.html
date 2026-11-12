@@ -13,6 +13,7 @@
    centred, every ink in the box and three typefaces that don't match. */
 @font-face { font-family: "Archivo"; src: url({{FONT_NORMAL}}) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: block; }
 @font-face { font-family: "Archivo"; src: url({{FONT_ITALIC}}) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; font-display: block; }
+@font-face { font-family: "Bebas Neue"; src: url({{FONT_NAMES}}) format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
 :root {
   color-scheme: light;
   --paper: #fdfcf6;
@@ -35,6 +36,7 @@
   --photo: none;
   --blend: normal;
   --grot: "Archivo", "Arial Black", Arial, sans-serif;
+  --names: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
   --serif: "Times New Roman", Times, "Nimbus Roman", "Noto Serif", serif;
 }
 * { box-sizing: border-box; }
@@ -114,13 +116,12 @@ h2 {
 .panel li { flex: 1 1 auto; text-align: center; }
 .panel a {
   display: inline-block; text-decoration: none; white-space: nowrap;
-  font-weight: 900; font-stretch: 62%; font-size: clamp(34px, 12cqw, 76px); line-height: .98;
+  font-family: var(--names); font-weight: 400; font-size: clamp(38px, 13.5cqw, 86px); line-height: .98;
   color: transparent; background: var(--name); -webkit-background-clip: text; background-clip: text;
   filter: drop-shadow(1.5px 0 0 var(--key)) drop-shadow(-1.5px 0 0 var(--key)) drop-shadow(0 1.5px 0 var(--key)) drop-shadow(0 -1.5px 0 var(--key)) drop-shadow(2px 2px 0 var(--key));
 }
-.panel li:nth-child(3n+2) a { font-stretch: 78%; font-size: clamp(30px, 10.4cqw, 66px); }
-.panel li:nth-child(4n) a { font-stretch: 68%; }
-.panel li:last-child a { font-stretch: 125%; font-size: clamp(24px, 8cqw, 52px); }
+.panel li:nth-child(3n+2) a { font-size: clamp(34px, 12cqw, 76px); }
+.panel li:last-child a { font-size: clamp(26px, 9cqw, 58px); }
 .panel a:hover { text-decoration: underline; }
 .sets { margin-top: 2.5cqw; display: grid; gap: 2px; text-align: left; font-weight: 900; font-stretch: 112%; font-size: clamp(10px, 2.75cqw, 14px); line-height: 1.12; }
 .sets li { display: grid; grid-template-columns: 4.6em 1fr; gap: 6px; }
