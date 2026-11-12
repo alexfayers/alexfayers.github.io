@@ -1,5 +1,5 @@
 # Everything hand-written on mycode.rocks lives here.
-# The lineup, numbers, weekly table and outlets list are filled in by build.py
+# The lineup, numbers and weekly table are filled in by build.py
 # from public GitHub data.
 
 user = "alexfayers"
@@ -9,7 +9,7 @@ name = "Alex Fayers"
 intro = "I write software, mostly Python. Lately it's _tooling for AI coding assistants_. I also make jungle as BIRDSTARE."
 
 # Multicoloured line under the title.
-strapline = "Python all night long"
+strapline = "Software and jungle"
 
 # How many recently pushed repos go on the lineup.
 max_repos = 6
@@ -18,7 +18,7 @@ max_repos = 6
 exclude = ["alexfayers.github.io"]
 
 # Extra bullets after the generated numbers.
-facts = ["Frog on the door"]
+facts = []
 
 [[links]]
 label = "GitHub"
