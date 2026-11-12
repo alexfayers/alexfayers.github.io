@@ -1,0 +1,105 @@
+# Everything hand-written on mycode.rocks lives here.
+# The lineup, numbers and weekly table are filled in by build.py
+# from public GitHub data.
+
+user = "alexfayers"
+name = "Alex Fayers"
+
+# The blurb. _underscores_ underline, like the real flyers did.
+intro = "I write software, mostly Python. Lately it's _tooling for AI coding assistants_. I also make jungle as BIRDSTARE."
+
+# Multicoloured line under the title.
+strapline = "Software and jungle"
+
+# How many recently pushed repos go on the lineup.
+max_repos = 6
+
+# Public repos that should never appear, by name.
+exclude = ["alexfayers.github.io"]
+
+# Extra bullets after the generated numbers.
+facts = []
+
+[[links]]
+label = "GitHub"
+url = "https://github.com/alexfayers"
+
+[[links]]
+label = "LinkedIn"
+url = "https://www.linkedin.com/in/alex-fayers/"
+
+[[music]]
+name = "BIRDSTARE"
+text = ""
+spotify = "https://open.spotify.com/artist/3s5uGWfU6kxSdJuWYcUN5s"
+apple = "https://music.apple.com/us/artist/birdstare/1739942467"
+youtube = "https://music.youtube.com/@birdstare"
+
+[[music]]
+name = "sreyaf"
+text = ""
+spotify = "https://open.spotify.com/artist/14GG8KwYVuFIG1Q95Jmrlj"
+apple = "https://music.apple.com/us/artist/sreyaf/1478141803"
+youtube = "https://music.youtube.com/@sreyaf"
+
+# The play button picks one of these at random (YouTube video IDs).
+# Nothing is requested from YouTube until the button is pressed.
+[[tracks]]
+id = "T2Xw_KojMXA"
+title = "20"
+
+[[tracks]]
+id = "0PYug7mu1tc"
+title = "Bring It Down"
+
+[[tracks]]
+id = "eMOX_zuQ0so"
+title = "Ocean Level"
+
+[[tracks]]
+id = "xZUPmqO5U48"
+title = "30 Hz"
+
+[[tracks]]
+id = "ZzgHWFVCuwk"
+title = "Sounds Of The DJ"
+
+[[tracks]]
+id = "xJpKaSMAoyc"
+title = "Soundboy"
+
+[[tracks]]
+id = "fTEhcSPK8oA"
+title = "The Drums"
+
+[[tracks]]
+id = "3Wz5dmuxcVM"
+title = "High Volume"
+
+[[tracks]]
+id = "PL_kljsFQbM"
+title = "Bass Murderer"
+
+[[tracks]]
+id = "nBEGdZV7-DA"
+title = "Gangsta"
+
+[[tracks]]
+id = "YDHiyr8JlmM"
+title = "Off Your Face"
+
+[[tracks]]
+id = "-cObKMSrhPY"
+title = "Play With Fire"
+
+[[tracks]]
+id = "kyuO5cHZI-k"
+title = "Be With Me"
+
+[[tracks]]
+id = "A531_gIzKps"
+title = "Baby"
+
+[[tracks]]
+id = "cR68i41qkdw"
+title = "Fuego"
