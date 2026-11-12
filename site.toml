@@ -1,0 +1,43 @@
+# Everything hand-written on mycode.rocks lives here.
+# The lineup, numbers, weekly table and outlets list are filled in by build.py
+# from public GitHub data.
+
+user = "alexfayers"
+name = "Alex Fayers"
+
+# The blurb. _underscores_ underline, like the real flyers did.
+intro = "I write software, mostly Python. Lately it's _tooling for AI coding assistants_. I also make jungle as BIRDSTARE."
+
+# Multicoloured line under the title.
+strapline = "Python all night long"
+
+# How many recently pushed repos go on the lineup.
+max_repos = 6
+
+# Public repos that should never appear, by name.
+exclude = ["alexfayers.github.io"]
+
+# Extra bullets after the generated numbers.
+facts = ["Frog on the door"]
+
+[[links]]
+label = "GitHub"
+url = "https://github.com/alexfayers"
+
+[[links]]
+label = "LinkedIn"
+url = "https://www.linkedin.com/in/alex-fayers/"
+
+[[music]]
+name = "BIRDSTARE"
+text = ""
+spotify = "https://open.spotify.com/artist/3s5uGWfU6kxSdJuWYcUN5s"
+apple = "https://music.apple.com/us/artist/birdstare/1739942467"
+youtube = "https://music.youtube.com/@birdstare"
+
+[[music]]
+name = "sreyaf"
+text = ""
+spotify = "https://open.spotify.com/artist/14GG8KwYVuFIG1Q95Jmrlj"
+apple = "https://music.apple.com/us/artist/sreyaf/1478141803"
+youtube = "https://music.youtube.com/@sreyaf"
