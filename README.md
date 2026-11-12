@@ -5,7 +5,7 @@ One static page. GitHub Actions rebuilds it every morning.
 - `site.toml`: everything hand-written (blurb, strapline, links, music, `exclude`).
 - `build.py`: reads `site.toml` and the public GitHub API, writes `_site/index.html`. Standard library only.
 - `template.html`: the page. One line of inline JavaScript picks the print run. Frog and fonts are inlined.
-- `player.js`: the play button. No outside requests are made until it is pressed, then one hidden YouTube player loads a random track from `[[tracks]]` in `site.toml`.
+- `player.js`: the play and next buttons. No outside requests are made until one is pressed, then one hidden YouTube player loads a random track from `[[tracks]]` in `site.toml`.
 - `fonts/`: Archivo (OFL), from @fontsource-variable/archivo. Bebas Neue (OFL), from @fontsource/bebas-neue.
 
 ```sh
