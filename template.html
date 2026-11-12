@@ -45,7 +45,8 @@ body { margin: 0; background: #1b1b1b; color: var(--black); font: 700 13px/1.35 
 h1, h2, h3, p, ul, ol { margin: 0; padding: 0; list-style: none; }
 a { color: inherit; }
 a:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
-main { container-type: inline-size; max-width: 640px; margin: 0 auto; }
+main { max-width: 640px; margin: 0 auto; }
+.sheet { container-type: inline-size; }
 
 /* ---- front ---- */
 .front { position: relative; aspect-ratio: 10 / 9; overflow: hidden; background: #000; }
@@ -80,8 +81,7 @@ main { container-type: inline-size; max-width: 640px; margin: 0 auto; }
 .back section { margin-top: 3.2cqw; }
 .outline { text-shadow: -1.5px -1.5px 0 var(--key), 1.5px -1.5px 0 var(--key), -1.5px 1.5px 0 var(--key), 1.5px 1.5px 0 var(--key), 0 2px 0 var(--key), 2px 0 0 var(--key), 0 -2px 0 var(--key), -2px 0 0 var(--key); }
 
-.corners { display: flex; justify-content: space-between; align-items: center; gap: 2cqw; }
-.roundel { flex: none; width: 19cqw; max-width: 120px; aspect-ratio: 1; height: auto; border-radius: 50%; border: 3px solid var(--blue); outline: 3px solid var(--red); image-rendering: pixelated; }
+.corners { display: flex; justify-content: center; }
 .burst {
   width: 36cqw; max-width: 220px; aspect-ratio: 1; display: grid; place-content: center; rotate: -11deg; margin: -1cqw 0 0; position: relative; z-index: 1;
   background: var(--red); color: var(--hi); clip-path: polygon({{BURST}});
@@ -97,9 +97,6 @@ h1 { color: var(--green); font: 700 9.7cqw/1.05 var(--serif); letter-spacing: .0
 .when { font: 400 clamp(13px, 4cqw, 26px)/1.2 var(--serif); }
 .when b { display: block; font-weight: 700; font-size: 1.15em; text-transform: none; }
 
-.blurbwrap { position: relative; }
-.blurbwrap img { position: absolute; left: 50%; top: 55%; width: 62%; height: auto; translate: -50% -50%; opacity: .14; image-rendering: pixelated; -webkit-mask-image: radial-gradient(circle, #000 45%, transparent 70%); mask-image: radial-gradient(circle, #000 45%, transparent 70%); }
-.blurbwrap p { position: relative; }
 .back h1, .back h2, .back .rainbow, .back .on, .facts, .sets, .outlets ul { filter: blur(.25px); }
 .blurb { margin-top: 2cqw; font: 700 clamp(10.5px, 2.9cqw, 16px)/1.32 var(--serif); letter-spacing: .01em; }
 
@@ -192,8 +189,17 @@ h2 {
 .info ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 6cqw; margin-top: 4px; font-size: 1.5em; font-stretch: 75%; font-weight: 900; }
 
 .small { margin-top: 4cqw; font-weight: 700; font-stretch: 75%; font-size: clamp(10px, 2.5cqw, 12px); line-height: 1.4; text-transform: none; }
-.roundel, .snap img, .blurbwrap img { filter: var(--photo); mix-blend-mode: var(--blend); }
+.snap img { filter: var(--photo); mix-blend-mode: var(--blend); }
 .i0 { color: var(--red); } .i1 { color: var(--amber); } .i2 { color: var(--green); } .i3 { color: var(--sky); } .i4 { color: var(--purple); }
+
+/* ---- landscape: front and back side by side ---- */
+@media (min-width: 900px) and (orientation: landscape) {
+  main { max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  .burst { width: 44cqw; max-width: 260px; }
+}
+@media (min-width: 900px) and (orientation: landscape) and (min-height: 640px) {
+  .cover { position: sticky; top: 0; height: 100vh; display: grid; align-content: center; }
+}
 
 /* ---- print runs: same flyer, different inks and paper ---- */
 .t-ting {
@@ -226,6 +232,7 @@ h2 {
 </head>
 <body>
 <main class="t-{{THEME}}">{{SCRIPT}}
+  <div class="sheet cover">
   <header class="front">
     <svg viewBox="0 0 400 360" aria-hidden="true">{{FIREWORKS}}</svg>
     <img src="{{FROG}}" alt="Low-poly frog, standing its ground" width="224" height="224">
@@ -244,12 +251,12 @@ h2 {
     <p class="at">@ github.com/alexfayers</p>
     <p class="date">{{DATE_SHORT}}</p>
   </header>
+  </div>
 
+  <div class="sheet">
   <article class="back">
     <div class="corners">
-      <img class="roundel" src="{{FROG}}" alt="" width="224" height="224">
       <p class="burst"><b>{{COMMITS}}</b><span>commits in<br>{{WEEKS}} weeks</span></p>
-      <img class="roundel" src="{{FROG}}" alt="" width="224" height="224">
     </div>
     <p class="presents outline">{{NAME}} presents</p>
     <h1>mycode.rocks</h1>
@@ -257,7 +264,7 @@ h2 {
     <p class="venue">{{GITHUB}}</p>
     <p class="when"><b>{{BUILT_LONG}}</b></p>
 
-    <div class="blurbwrap"><img src="{{FROG}}" alt="" width="224" height="224"><p class="blurb">{{INTRO}}</p></div>
+    <p class="blurb">{{INTRO}}</p>
 
     <section aria-labelledby="h-main">
       <h2 id="h-main">What I'm building</h2>
@@ -285,6 +292,7 @@ h2 {
 
     <p class="small">THE FROG'S DECISION IS FINAL</p>
   </article>
+  </div>
 </main>
 {{PLAYER_SCRIPT}}
 </body>
