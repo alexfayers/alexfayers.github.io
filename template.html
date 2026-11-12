@@ -164,8 +164,10 @@ h2 {
 .play:hover { translate: 0 -1px; }
 .play:active { translate: 2px 2px; box-shadow: none; }
 .play:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+.controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 12px; }
 .play i { width: .85em; height: .85em; background: currentColor; clip-path: polygon(10% 0, 100% 50%, 10% 100%); }
 .play[data-state="playing"] i { clip-path: none; background: linear-gradient(90deg, currentColor 34%, transparent 34% 66%, currentColor 66%); }
+.next i { order: 1; clip-path: polygon(0 0, 70% 50%, 70% 0, 100% 0, 100% 100%, 70% 100%, 70% 50%, 0 100%); }
 .now { margin-top: 8px; font-size: .85em; font-weight: 800; text-transform: none; }
 .yt { position: absolute; left: -9999px; top: 0; width: 200px; height: 200px; border: 0; }
 .zig.green ul { display: block; }

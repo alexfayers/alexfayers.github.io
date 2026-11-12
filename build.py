@@ -217,9 +217,11 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
     )
     tracks = [[track["id"], track["title"]] for track in cfg.get("tracks", [])]
     player_html = (
-        '<button id="play" class="play" type="button" aria-label="Play a random track by BIRDSTARE" '
+        '<div class="controls"><button id="play" class="play" type="button" aria-label="Play a random track by BIRDSTARE" '
         f'data-tracks="{escape(json.dumps(tracks), quote=True)}"><i aria-hidden="true"></i><span>Play</span></button>'
-        '<p id="now" class="now" aria-live="polite">Loads YouTube when you press play</p>'
+        '<button id="next" class="play next" type="button" aria-label="Play another random track">'
+        '<i aria-hidden="true"></i><span>Next</span></button></div>'
+        '<p id="now" class="now" aria-live="polite">Loads YouTube when you press play or next</p>'
         if tracks
         else ""
     )

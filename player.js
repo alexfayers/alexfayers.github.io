@@ -1,11 +1,13 @@
 (function () {
   var button = document.getElementById("play");
+  var next = document.getElementById("next");
   var status = document.getElementById("now");
   var label = button.querySelector("span");
   var tracks = JSON.parse(button.dataset.tracks);
   var origin = "https://www.youtube-nocookie.com";
   var frame = null;
   var playing = false;
+  var loaded = false;
   var last = -1;
   var errors = 0;
 
@@ -37,6 +39,7 @@
     frame.referrerPolicy = "strict-origin-when-cross-origin";
     frame.src = origin + "/embed/" + pick() + "?enablejsapi=1&autoplay=1&playsinline=1&origin=" + encodeURIComponent(location.origin);
     frame.addEventListener("load", function () {
+      loaded = true;
       frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), origin);
     });
     document.body.appendChild(frame);
@@ -51,6 +54,11 @@
     else if (data.event === "onError" || state === 0) send("loadVideoById", [pick()]);
     else if (state === 1) { errors = 0; show(true); }
     else if (state === 2 || state === 5) show(false);
+  });
+
+  next.addEventListener("click", function () {
+    if (!frame) { show(true); open(); }
+    else if (loaded) { show(true); send("loadVideoById", [pick()]); }
   });
 
   button.addEventListener("click", function () {
