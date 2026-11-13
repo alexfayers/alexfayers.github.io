@@ -185,6 +185,11 @@ h2 {
   grid-area: station; color: #fff; font: 400 clamp(40px, 12cqw, 64px)/.9 var(--names); text-transform: uppercase;
   text-shadow: 1px 1px 0 var(--shade), 2px 2px 0 var(--shade), 3px 3px 0 var(--shade);
 }
+.radio.has-freq { grid-template-areas: "live freq" "station bars" "now now" "controls controls"; }
+.freq {
+  grid-area: freq; align-self: center; margin: 0; color: #ffe81a; font: 400 clamp(36px, 11cqw, 52px)/.85 var(--names); letter-spacing: .02em; white-space: nowrap;
+  text-shadow: 2px 2px 0 var(--red), 3px 3px 0 var(--red), 4px 4px 0 var(--red);
+}
 .now { grid-area: now; margin-top: 6px; min-height: 1.25em; font: 800 13px/1.25 var(--grot); }
 .controls { grid-area: controls; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
 .radio[data-state="blocked"] { box-shadow: 0 0 0 3px #000, 0 0 0 5px #ffe81a; }
@@ -299,9 +304,11 @@ body:has(.slap:not([hidden])) main { padding-bottom: 72px; }
   .music b { font-size: 2.6vh; }
   .band { grid-area: live; padding: 0; background: none; }
   .band { position: relative; z-index: 3; }
-  .radio { width: min(100%, 560px); }
+  .radio { width: min(100%, 600px); }
   .station { font-size: clamp(32px, 5.6vh, 60px); }
   .live { font-size: 1.6vh; }
+  .radio.has-freq { grid-template-areas: "live bars" "station bars" "now now" "controls freq"; }
+  .freq { align-self: end; margin-top: 10px; font-size: clamp(34px, 5vh, 60px); }
   .now { font-size: max(13px, 1.5vh); }
   .radio .bars { align-self: stretch; height: auto; min-height: 5vh; }
   .play { font-size: 1.7vh; min-height: 40px; }

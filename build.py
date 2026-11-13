@@ -225,15 +225,19 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
         "'sha256-" + base64.b64encode(hashlib.sha256(code.encode()).digest()).decode() + "'" for code in (script, player)
     )
     tracks = [[track["id"], track["title"]] for track in cfg.get("tracks", [])]
+    frequency = str(cfg.get("radio", {}).get("frequency", "")).strip()
+    radio_label = escape(f"Music player, {frequency}" if frequency else "Music player")
+    freq_html = f'<p class="freq" aria-hidden="true">{escape(frequency)}</p>' if frequency else ""
     player_html = (
-        '<div class="band"><div id="radio" class="radio" role="group" aria-label="Music player" data-state="idle">'
+        f'<div class="band"><div id="radio" class="radio{" has-freq" if frequency else ""}" role="group" aria-label="{radio_label}" data-state="idle">'
         '<p class="live">Live on</p><p class="station">BIRDSTARE FM</p>'
         '<span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>'
         '<p id="now" class="now" aria-live="polite">Tuning in</p>'
         '<div class="controls"><button id="play" class="play" type="button" aria-label="Play a random track by BIRDSTARE" '
         f'data-act="play" data-tracks="{escape(json.dumps(tracks), quote=True)}"><i aria-hidden="true"></i><span>Play</span></button>'
         '<button id="next" class="play next" type="button" data-act="next" aria-label="Play another random track">'
-        '<i aria-hidden="true"></i><span>Next</span></button></div></div></div>'
+        '<i aria-hidden="true"></i><span>Next</span></button></div>'
+        f"{freq_html}</div></div>"
         if tracks
         else ""
     )
