@@ -10,7 +10,8 @@
 <style>
 /* Layout idea: both sides of a 1994-95 jungle flyer. Front: CGI mascot on
    black with red 3D lettering and fireworks. Back: white paper, crammed,
-   centred, every ink in the box and four typefaces that don't match. */
+   centred, every ink in the box and four typefaces that don't match.
+   Wide landscape screens get both sides as one poster. */
 @font-face { font-family: "Archivo"; src: url({{FONT_NORMAL}}) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: block; }
 @font-face { font-family: "Archivo"; src: url({{FONT_ITALIC}}) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; font-display: block; }
 @font-face { font-family: "Bebas Neue"; src: url({{FONT_NAMES}}) format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
@@ -25,6 +26,7 @@
   --purple: #6b2a8e;
   --pink: #e6007e;
   --amber: #f39200;
+  --shade: var(--red);  /* lettering shadow on black */
   --key: #000;          /* outlines and borders */
   --on: #fff;           /* text on coloured boxes */
   --hi: #ffe81a;        /* highlight text on coloured boxes */
@@ -49,18 +51,20 @@ main { max-width: 640px; margin: 0 auto; }
 .sheet { container-type: inline-size; }
 
 /* ---- front ---- */
-.front { position: relative; aspect-ratio: 10 / 9; overflow: hidden; background: #000; }
-.front svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.front img {
+.front { position: relative; overflow: hidden; background: #000; }
+.art { position: relative; aspect-ratio: 10 / 9; overflow: hidden; background: #000; }
+.art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.art img {
   position: absolute; left: 2%; top: 17%; width: 80%; height: auto; rotate: -9deg; image-rendering: pixelated;
   -webkit-mask-image: radial-gradient(ellipse 46% 48% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 46% 48% at 50% 50%, #000 62%, transparent 100%);
 }
-.front text { font-family: var(--grot); font-weight: 900; letter-spacing: 1px; }
-.front .date {
+.art text { font-family: var(--grot); font-weight: 900; letter-spacing: 1px; }
+.art .wide { display: none; }
+.art .date {
   position: absolute; left: 4cqw; bottom: 3cqw; color: var(--red);
   font-weight: 900; font-stretch: 125%; font-size: 8.4cqw; line-height: 1; letter-spacing: .04em;
 }
-.front .at {
+.art .at {
   position: absolute; left: 4cqw; bottom: 13cqw; color: #ffe81a; text-shadow: 2px 2px 0 var(--red);
   font: italic 700 4.6cqw/1 ui-monospace, "Courier New", monospace; letter-spacing: .04em;
 }
@@ -74,7 +78,7 @@ main { max-width: 640px; margin: 0 auto; }
     radial-gradient(circle at 66% 12%, rgba(0,0,0,.3) 0 1px, transparent 1.5px);
 }
 .back::before { background-size: 100% 100%, 100% 37%, 100% 29%, 100% 23%, 100% 41%; }
-.front img, .front svg { filter: contrast(1.08) saturate(1.15) blur(.3px); }
+.art img, .art svg { filter: contrast(1.08) saturate(1.15) blur(.3px); }
 
 /* ---- back ---- */
 .back { position: relative; overflow: hidden; color: var(--black); background: var(--sheet); box-shadow: inset 0 0 14cqw var(--age); padding: 4cqw 4cqw 5cqw; text-align: center; text-transform: uppercase; }
@@ -156,45 +160,68 @@ h2 {
 .zig b { font-size: 1.5em; font-stretch: 75%; text-transform: none; letter-spacing: .02em; }
 .zig span { text-transform: none; }
 .play {
-  display: inline-flex; align-items: center; gap: .6em; margin-top: 12px; padding: .55em 1.1em; rotate: -1.2deg;
-  border: 2px solid var(--key); background: var(--hi); color: var(--purple); box-shadow: 3px 3px 0 var(--key); cursor: pointer;
-  font: 900 1.15em/1 var(--grot); font-stretch: 112%; letter-spacing: .06em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: .6em; min-height: 44px; margin: 0; padding: .55em 1.1em; rotate: -1.2deg;
+  border: 2px solid #000; background: #ffe81a; color: #000; box-shadow: 3px 3px 0 var(--red); cursor: pointer;
+  font: 900 15px/1 var(--grot); font-stretch: 112%; letter-spacing: .06em; text-transform: uppercase;
 }
-.zig .play span { text-transform: uppercase; }
 .play:hover { translate: 0 -1px; }
 .play:active { translate: 2px 2px; box-shadow: none; }
-.play:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
-.controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 12px; }
+.play:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .play i { width: .85em; height: .85em; background: currentColor; clip-path: polygon(10% 0, 100% 50%, 10% 100%); }
 .play[data-state="playing"] i { clip-path: none; background: linear-gradient(90deg, currentColor 34%, transparent 34% 66%, currentColor 66%); }
 .next i { order: 1; clip-path: polygon(0 0, 70% 50%, 70% 0, 100% 0, 100% 100%, 70% 100%, 70% 50%, 0 100%); }
-.now { margin-top: 8px; font-size: .85em; font-weight: 800; text-transform: none; }
-.sticker[hidden] { display: none; }
-.sticker {
-  position: fixed; left: 50%; bottom: 20px; translate: -50% 0; rotate: -1.5deg; z-index: 5; max-width: calc(100vw - 24px);
-  display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--paper); color: var(--black);
-  border: 2px solid var(--black); box-shadow: 3px 3px 0 var(--black); font: 900 13px/1.1 var(--grot);
+
+/* ---- player: a printed "live on" box ---- */
+.band { padding: 5cqw 4cqw 6cqw; display: grid; place-items: center; }
+.radio {
+  display: grid; grid-template-columns: 1fr auto; grid-template-areas: "live bars" "station bars" "now now" "controls controls"; column-gap: 14px;
+  width: min(100%, 560px); padding: 12px 16px 14px; rotate: -1deg; background: #000; color: #fff; text-align: left; text-transform: none;
+  border: 3px solid var(--red); box-shadow: 0 0 0 3px #000, 0 0 0 5px var(--red);
 }
-body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
-.sticker p { min-width: 0; }
-.sticker b { display: block; color: var(--red); font-stretch: 125%; letter-spacing: .06em; text-transform: uppercase; }
-.sticker .title { display: block; margin-top: 3px; max-width: 20ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
-.sticker .play { margin-top: 0; padding: .45em .8em; font-size: 12px; background: var(--black); color: var(--paper); border-color: var(--black); box-shadow: none; }
-.sticker[data-state="tap"] { flex-direction: column; gap: 10px; width: min(440px, calc(100vw - 24px)); padding: 14px 18px; rotate: -2.5deg; font-size: 20px; text-align: center; }
-.sticker[data-state="tap"] b { font-size: 1.4em; }
-.sticker[data-state="tap"] :is(.bars, .title, [data-act="next"]) { display: none; }
+.live { grid-area: live; color: #ffe81a; font: italic 900 14px/1 var(--grot); font-stretch: 125%; letter-spacing: .12em; text-transform: uppercase; }
+.live::before { content: "\25CF\00a0"; color: #555; }
+.radio[data-state="playing"] .live::before { color: var(--red); }
+.station {
+  grid-area: station; color: #fff; font: 400 clamp(40px, 12cqw, 64px)/.9 var(--names); text-transform: uppercase;
+  text-shadow: 1px 1px 0 var(--shade), 2px 2px 0 var(--shade), 3px 3px 0 var(--shade);
+}
+.now { grid-area: now; margin-top: 6px; min-height: 1.25em; font: 800 13px/1.25 var(--grot); }
+.controls { grid-area: controls; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+.radio[data-state="blocked"] { box-shadow: 0 0 0 3px #000, 0 0 0 5px #ffe81a; }
+.radio[data-state="blocked"] .play:not(.next) { padding: .55em .9em; font-size: clamp(14px, 4.2cqw, 17px); letter-spacing: .03em; box-shadow: 4px 4px 0 var(--red); }
 .bars { display: flex; align-items: flex-end; gap: 3px; height: 30px; }
+.radio .bars { grid-area: bars; align-self: end; gap: 4px; height: 44px; }
+.radio .bars i { width: 7px; }
 .bars i { width: 5px; height: 100%; background: var(--c); transform-origin: bottom; transform: scaleY(var(--h)); animation: bounce var(--d) ease-in-out var(--o) infinite alternate paused; }
-.sticker[data-state="playing"] .bars i { animation-play-state: running; }
+:is(.radio, .slap)[data-state="playing"] .bars i { animation-play-state: running; }
 .bars i:nth-child(1) { --c: var(--red); --h: .5; --d: .83s; --o: -.2s; }
-.bars i:nth-child(2) { --c: var(--blue); --h: .85; --d: 1.27s; --o: -.9s; }
-.bars i:nth-child(3) { --c: var(--green); --h: .35; --d: .61s; --o: -.5s; }
-.bars i:nth-child(4) { --c: var(--pink); --h: 1; --d: 1.09s; --o: -.1s; }
-.bars i:nth-child(5) { --c: var(--amber); --h: .6; --d: .97s; --o: -.7s; }
-.bars i:nth-child(6) { --c: var(--sky); --h: .3; --d: .71s; --o: -.3s; }
-.bars i:nth-child(7) { --c: var(--purple); --h: .75; --d: 1.43s; --o: -1.1s; }
+.bars i:nth-child(2) { --c: #f39200; --h: .85; --d: 1.27s; --o: -.9s; }
+.bars i:nth-child(3) { --c: #c8e03a; --h: .35; --d: .61s; --o: -.5s; }
+.bars i:nth-child(4) { --c: #fff; --h: 1; --d: 1.09s; --o: -.1s; }
+.bars i:nth-child(5) { --c: #f7a8b8; --h: .6; --d: .97s; --o: -.7s; }
+.bars i:nth-child(6) { --c: #f8d200; --h: .3; --d: .71s; --o: -.3s; }
+.bars i:nth-child(7) { --c: var(--red); --h: .75; --d: 1.43s; --o: -1.1s; }
+:is(.t-bliss, .t-copy, .t-89) .bars i { --c: var(--ink); }
 @keyframes bounce { 0% { transform: scaleY(.15); } 22% { transform: scaleY(.85); } 37% { transform: scaleY(.35); } 71% { transform: scaleY(1); } 100% { transform: scaleY(.25); } }
 @media (prefers-reduced-motion: reduce) { .bars i { animation: none; } }
+
+/* ---- sticker: shows while the box is off screen ---- */
+.slap[hidden] { display: none; }
+.slap {
+  position: fixed; right: 12px; bottom: 12px; z-index: 5; rotate: 2.5deg; max-width: calc(100vw - 24px);
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 12px; background: #000; color: #fff;
+  border: 2px solid var(--red); box-shadow: 4px 4px 0 rgba(0,0,0,.4); font: 900 12px/1.1 var(--grot);
+}
+.slap::before { content: ""; position: absolute; top: -9px; left: 50%; width: 46px; height: 16px; translate: -50% 0; rotate: -4deg; background: rgba(255,250,220,.55); }
+.slap p { min-width: 0; }
+.slap b { display: block; color: #ffe81a; letter-spacing: .1em; text-transform: uppercase; }
+.slap .title { display: block; margin-top: 3px; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.slap .bars { height: 26px; }
+.slap .bars i { width: 4px; }
+.slap .play { width: 44px; padding: 0; justify-content: center; rotate: none; }
+.slap .play span { display: none; }
+.t-copy .slap { filter: grayscale(1); }
+body:has(.slap:not([hidden])) main { padding-bottom: 72px; }
 .yt { position: absolute; left: -9999px; top: 0; width: 200px; height: 200px; border: 0; }
 .zig.green ul { display: block; }
 .zig.green li { display: inline; }
@@ -220,21 +247,76 @@ body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
 .snap img { filter: var(--photo); mix-blend-mode: var(--blend); }
 .i0 { color: var(--red); } .i1 { color: var(--amber); } .i2 { color: var(--green); } .i3 { color: var(--sky); } .i4 { color: var(--purple); }
 
-/* ---- landscape: front and back side by side ---- */
-@media (min-width: 900px) and (orientation: landscape) {
-  .sticker { left: 20px; translate: none; }
-  .sticker[data-state="tap"] { flex-direction: row; width: auto; }
-  main { max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
-  .burst { width: 44cqw; max-width: 260px; }
-}
-@media (min-width: 900px) and (orientation: landscape) and (min-height: 640px) {
-  .cover { position: sticky; top: 0; height: 100vh; display: grid; align-content: center; }
+/* ---- landscape: one poster ---- */
+@media (orientation: landscape) and (min-width: 900px) and (min-height: 600px) {
+  main { max-width: none; margin: 0; }
+  .sheet {
+    position: relative; display: grid; min-height: 100vh; overflow: hidden;
+    grid-template-columns: 1fr 1.6fr 1fr; grid-template-rows: 39vh 1fr auto auto;
+    grid-template-areas: "hero hero hero" "bill line sched" "music live find" "small small small";
+    column-gap: 2.5cqw; padding: 0 2.5cqw 1.5vh; align-items: center;
+    background: var(--sheet); box-shadow: inset 0 0 8cqw var(--age);
+    color: var(--black); text-align: center; text-transform: uppercase;
+  }
+  .front, .back { display: contents; }
+  .front::after { display: none; }
+  .back section { margin-top: 0; }
+  .art .tall { display: none; }
+  .art .wide { display: block; }
+  .art { grid-area: hero; align-self: stretch; margin: 0 -2.5cqw; aspect-ratio: auto; }
+  .art img { left: calc(3% + max(0px, 100cqw - 1280px) * .2); top: 50%; width: auto; height: 92%; max-height: 336px; translate: 0 -50%; }
+  .art .word { inset: 2% 2% auto 31%; width: auto; height: 80%; }
+  .stamp { position: absolute; left: 28cqw; right: calc(22vh + 9cqw); bottom: 2vh; display: flex; align-items: baseline; justify-content: space-between; gap: 2cqw; }
+  .art .at, .art .date { position: static; white-space: nowrap; }
+  .art .at { font-size: max(12px, 2.2vh); }
+  .art .date { font-size: 5vh; }
+  .corners { grid-area: hero; align-self: end; justify-self: end; position: relative; z-index: 3; margin: 0 3cqw -6vh 0; }
+  .burst { width: 22vh; max-width: none; margin: 0; }
+
+  .bill { grid-area: bill; }
+  .bill h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .presents { font-size: 2.8vh; }
+  .rainbow { font-size: 2.6vh; }
+  .venue { font-size: 3.6vh; }
+  .when { font-size: 2.2vh; }
+  .blurb { margin-top: 1vh; font-size: max(12px, 1.75vh); line-height: 1.3; }
+
+  .line { grid-area: line; }
+  .line h2 { font-size: 2.6vh; }
+  .panel { margin: 1vh 0 0; padding: 1.2vh 1.5cqw; }
+  .panel a { font-size: clamp(30px, 5.6vh, 64px); }
+  .panel li:nth-child(3n+2) a { font-size: 5vh; }
+  .panel li:last-child a { font-size: 3.8vh; }
+  .facts { margin-top: 1vh; font-size: max(12px, 1.7vh); }
+
+  .sched { grid-area: sched; padding-top: 5.5vh; }
+  .sched h2 { font-size: 2.4vh; }
+  .times { max-width: none; margin-top: 1vh; font-size: clamp(11.5px, 1.5vh, 16px); }
+
+  .music { grid-area: music; }
+  .music .zig { padding: 2vh 1.2cqw; font-size: max(11.5px, 1.5vh); }
+  .music h3 { font-size: 1.8vh; }
+  .music b { font-size: 2.6vh; }
+  .band { grid-area: live; padding: 0; background: none; }
+  .band { position: relative; z-index: 3; }
+  .radio { width: min(100%, 560px); }
+  .station { font-size: clamp(32px, 5.6vh, 60px); }
+  .live { font-size: 1.6vh; }
+  .now { font-size: max(13px, 1.5vh); }
+  .radio .bars { align-self: stretch; height: auto; min-height: 5vh; }
+  .play { font-size: 1.7vh; min-height: 40px; }
+  .info { grid-area: find; margin: 0; font-size: 1.6vh; }
+  .info ul { font-size: 2.8vh; }
+  .small { grid-area: small; margin-top: .6vh; font-size: max(11px, 1.3vh); }
 }
 
 /* ---- print runs: same flyer, different inks and paper ---- */
 .t-ting {
   --sheet: radial-gradient(ellipse 34% 26% at 50% 0%, rgba(60,181,74,.55), transparent 70%), radial-gradient(ellipse 34% 16% at 50% 100%, rgba(60,181,74,.5), transparent 70%), linear-gradient(90deg, #ee3b25, #fff8f0 26%, #fff8f0 74%, #ee3b25);
   --blue: #3a1d8a; --purple: #4a2a9a; --panel: var(--green);
+}
+@media (orientation: landscape) and (min-width: 900px) and (min-height: 600px) {
+  .t-ting { --sheet: radial-gradient(ellipse 30% 30% at 50% 100%, rgba(60,181,74,.5), transparent 70%), linear-gradient(90deg, #ee3b25, #fff8f0 7%, #fff8f0 93%, #ee3b25); }
 }
 .t-bliss, .t-copy {
   --black: var(--ink); --red: var(--ink); --green: var(--ink); --blue: var(--ink); --sky: var(--ink); --purple: var(--ink); --pink: var(--ink); --amber: var(--ink); --dot: var(--ink);
@@ -243,7 +325,8 @@ body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
 }
 .t-bliss { --paper: #a8c4ea; --ink: #cf1140; --photo: grayscale(1) contrast(1.3); --blend: multiply; --age: rgba(40, 60, 120, .25); }
 .t-copy { --paper: #171717; --ink: #eeeee8; --photo: grayscale(1) contrast(1.5); --age: transparent; }
-.t-copy .front { filter: grayscale(1) contrast(1.25); }
+.t-copy { --shade: #6a6a6a; }
+.t-copy .art, .t-copy .band { filter: grayscale(1) contrast(1.25); }
 .t-89 {
   --paper: #f0dcc2; --sheet: #f0dcc2; --black: #1c1c1c; --ink: #3fae7d;
   --red: var(--ink); --green: var(--ink); --blue: var(--black); --sky: var(--ink); --purple: var(--ink); --pink: var(--ink); --amber: var(--black); --dot: var(--ink);
@@ -262,56 +345,72 @@ body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
 </head>
 <body>
 <main class="t-{{THEME}}">{{SCRIPT}}
-  <div class="sheet cover">
-  <header class="front">
-    <svg viewBox="0 0 400 360" aria-hidden="true">{{FIREWORKS}}</svg>
-    <img src="{{FROG}}" alt="Low-poly frog, standing its ground" width="224" height="224">
-    <svg viewBox="0 0 400 360" role="img" aria-label="mycode.rocks">
-      <defs>
-        <path id="arc1" d="M 150,112 Q 265,6 388,96"/>
-        <path id="arc2" d="M 196,140 Q 290,96 384,150"/>
-        <g id="word">
-          <text font-size="44"><textPath href="#arc1" startOffset="50%" text-anchor="middle">MYCODE</textPath></text>
-          <text font-size="46"><textPath href="#arc2" startOffset="50%" text-anchor="middle">.ROCKS</textPath></text>
-        </g>
-      </defs>
-      <g fill="#7a0d08"><use href="#word" x="1" y="1"/><use href="#word" x="2" y="2"/><use href="#word" x="3" y="3"/><use href="#word" x="4" y="4"/><use href="#word" x="5" y="5"/></g>
-      <use href="#word" fill="#ef2b1f"/>
-    </svg>
-    <p class="at">@ github.com/alexfayers</p>
-    <p class="date">{{DATE_SHORT}}</p>
-  </header>
-  </div>
-
   <div class="sheet">
-  <article class="back">
+  <header class="front">
+    <div class="art">
+      <svg class="tall" viewBox="0 0 400 360" aria-hidden="true">{{FIREWORKS}}</svg>
+      <svg class="wide" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">{{FIREWORKS_WIDE}}</svg>
+      <img src="{{FROG}}" alt="Low-poly frog, standing its ground" width="224" height="224">
+      <svg class="tall" viewBox="0 0 400 360" role="img" aria-label="mycode.rocks">
+        <defs>
+          <path id="arc1" d="M 150,112 Q 265,6 388,96"/>
+          <path id="arc2" d="M 196,140 Q 290,96 384,150"/>
+          <g id="word">
+            <text font-size="44"><textPath href="#arc1" startOffset="50%" text-anchor="middle">MYCODE</textPath></text>
+            <text font-size="46"><textPath href="#arc2" startOffset="50%" text-anchor="middle">.ROCKS</textPath></text>
+          </g>
+        </defs>
+        <g fill="#7a0d08"><use href="#word" x="1" y="1"/><use href="#word" x="2" y="2"/><use href="#word" x="3" y="3"/><use href="#word" x="4" y="4"/><use href="#word" x="5" y="5"/></g>
+        <use href="#word" fill="#ef2b1f"/>
+      </svg>
+      <svg class="wide word" viewBox="0 -50 840 350" role="img" aria-label="mycode.rocks">
+        <defs>
+          <path id="arc3" d="M 40,150 Q 420,0 800,120"/>
+          <path id="arc4" d="M 140,270 Q 470,160 820,250"/>
+          <g id="word2">
+            <text font-size="120"><textPath href="#arc3" startOffset="50%" text-anchor="middle">MYCODE</textPath></text>
+            <text font-size="124"><textPath href="#arc4" startOffset="50%" text-anchor="middle">.ROCKS</textPath></text>
+          </g>
+        </defs>
+        <g fill="#7a0d08"><use href="#word2" x="1.5" y="1.5"/><use href="#word2" x="3" y="3"/><use href="#word2" x="4.5" y="4.5"/><use href="#word2" x="6" y="6"/><use href="#word2" x="7.5" y="7.5"/></g>
+        <use href="#word2" fill="#ef2b1f"/>
+      </svg>
+      <div class="stamp">
+        <p class="at">@ github.com/alexfayers</p>
+        <p class="date">{{DATE_SHORT}}</p>
+      </div>
+    </div>
+    {{PLAYER}}
+  </header>
+
+  <div class="back">
     <div class="corners">
       <p class="burst"><b>{{COMMITS}}</b><span>commits in<br>{{WEEKS}} weeks</span></p>
     </div>
-    <p class="presents outline">{{NAME}} presents</p>
-    <h1>mycode.rocks</h1>
-    <p class="rainbow">{{RAINBOW}}</p>
-    <p class="venue">{{GITHUB}}</p>
-    <p class="when"><b>{{BUILT_LONG}}</b></p>
+    <div class="bill">
+      <p class="presents outline">{{NAME}} presents</p>
+      <h1>mycode.rocks</h1>
+      <p class="rainbow">{{RAINBOW}}</p>
+      <p class="venue">{{GITHUB}}</p>
+      <p class="when"><b>{{BUILT_LONG}}</b></p>
+      <p class="blurb">{{INTRO}}</p>
+    </div>
 
-    <p class="blurb">{{INTRO}}</p>
-
-    <section aria-labelledby="h-main">
+    <section class="line" aria-labelledby="h-main">
       <h2 id="h-main">What I'm building</h2>
       <ul class="panel">{{REPOS}}</ul>
       <ul class="facts">{{FACTS}}</ul>
     </section>
 
-    <section aria-labelledby="h-two">
+    <section class="sched" aria-labelledby="h-two">
       <h2 id="h-two">Commits per week, last {{WEEKS}} weeks</h2>
       <ol class="times" aria-label="Commits per week">{{ROWS}}</ol>
     </section>
 
-    <section>
+    <section class="music">
       <div class="zig pink">
-        <h3>Music</h3>
+        <h3>Music by</h3>
         <ul>{{MUSIC}}</ul>
-        {{PLAYER}}
       </div>
     </section>
 
@@ -321,12 +420,12 @@ body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
     </div>
 
     <p class="small">THE FROG'S DECISION IS FINAL</p>
-  </article>
+  </div>
   </div>
 
-  <div id="sticker" class="sticker" role="group" aria-label="Music" data-state="paused" hidden>
+  <div id="slap" class="slap" role="group" aria-label="Music" data-state="paused" hidden>
     <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-    <p><b>Now playing</b><span class="title"></span></p>
+    <p><b>On air</b><span class="title"></span></p>
     <button class="play" type="button" data-act="play" aria-label="Play a random track by BIRDSTARE"><i aria-hidden="true"></i><span>Play</span></button>
     <button class="play next" type="button" data-act="next" aria-label="Play another random track"><i aria-hidden="true"></i><span>Next</span></button>
   </div>

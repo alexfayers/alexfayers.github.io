@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build mycode.rocks: site.toml + public GitHub data -> one static index.html.
 
-Standard library only. The output makes no outside requests until the play
-button is pressed; the frog and the fonts are inlined.
+Standard library only. The only outside request the page makes is the YouTube
+player frame; the frog and the fonts are inlined.
 
     python3 build.py                       # fetch from GitHub, write _site/index.html
     python3 build.py --fixture data.json   # build offline from saved data
@@ -112,22 +112,31 @@ def ordinal(n: int) -> str:
     return f"{n}{suffix}"
 
 
-def fireworks() -> str:
+PORTRAIT_BURSTS = [
+    (300, 70, 78, ["#c8e03a", "#e3261b", "#ffffff"], 70),
+    (36, 70, 90, ["#f39200", "#8e44ad", "#e3261b"], 60),
+    (330, 285, 120, ["#e3261b", "#ffffff", "#f7a8b8"], 110),
+    (215, 338, 26, ["#f8d200", "#e3261b", "#f7a8b8"], 30),
+]
+LANDSCAPE_BURSTS = [
+    (110, 80, 110, ["#f39200", "#8e44ad", "#e3261b"], 90),
+    (560, 60, 90, ["#c8e03a", "#e3261b", "#ffffff"], 80),
+    (1150, 60, 70, ["#f8d200", "#c8e03a", "#ffffff"], 60),
+    (760, 380, 40, ["#f8d200", "#e3261b", "#f7a8b8"], 40),
+    (1080, 320, 150, ["#e3261b", "#ffffff", "#f7a8b8"], 150),
+]
+
+
+def fireworks(seed: int, bursts: list[tuple[int, int, int, list[str], int]], sizes: tuple[float, float]) -> str:
     """Bursts of little diamonds for the front, as inline SVG. Same every build."""
-    rng = random.Random(1995)
-    bursts = [
-        (300, 70, 78, ["#c8e03a", "#e3261b", "#ffffff"], 70),
-        (36, 70, 90, ["#f39200", "#8e44ad", "#e3261b"], 60),
-        (330, 285, 120, ["#e3261b", "#ffffff", "#f7a8b8"], 110),
-        (215, 338, 26, ["#f8d200", "#e3261b", "#f7a8b8"], 30),
-    ]
+    rng = random.Random(seed)
     shapes = []
     for cx, cy, radius, colours, count in bursts:
         for _ in range(count):
             angle = rng.uniform(0, 2 * math.pi)
             dist = radius * math.sqrt(rng.uniform(0.08, 1))
             x, y = cx + dist * math.cos(angle), cy + dist * math.sin(angle)
-            size = rng.uniform(2.5, 5.5)
+            size = rng.uniform(*sizes)
             turn = math.degrees(angle) + 90
             shapes.append(
                 f'<path d="M0,{-size * 1.6:.1f} L{size * 0.6:.1f},0 L0,{size:.1f} L{-size * 0.6:.1f},0Z" '
@@ -217,11 +226,14 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
     )
     tracks = [[track["id"], track["title"]] for track in cfg.get("tracks", [])]
     player_html = (
+        '<div class="band"><div id="radio" class="radio" role="group" aria-label="Music player" data-state="idle">'
+        '<p class="live">Live on</p><p class="station">BIRDSTARE FM</p>'
+        '<span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>'
+        '<p id="now" class="now" aria-live="polite">Tuning in</p>'
         '<div class="controls"><button id="play" class="play" type="button" aria-label="Play a random track by BIRDSTARE" '
         f'data-act="play" data-tracks="{escape(json.dumps(tracks), quote=True)}"><i aria-hidden="true"></i><span>Play</span></button>'
         '<button id="next" class="play next" type="button" data-act="next" aria-label="Play another random track">'
-        '<i aria-hidden="true"></i><span>Next</span></button></div>'
-        '<p id="now" class="now" aria-live="polite">Loads YouTube with the page and starts a random track where your browser allows</p>'
+        '<i aria-hidden="true"></i><span>Next</span></button></div></div></div>'
         if tracks
         else ""
     )
@@ -240,7 +252,8 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
         "FONT_NORMAL": inline("fonts/archivo-latin-wdth-normal.woff2", "font/woff2"),
         "FONT_ITALIC": inline("fonts/archivo-latin-wdth-italic.woff2", "font/woff2"),
         "FONT_NAMES": inline("fonts/bebas-neue-latin-400-normal.woff2", "font/woff2"),
-        "FIREWORKS": fireworks(),
+        "FIREWORKS": fireworks(1995, PORTRAIT_BURSTS, (2.5, 5.5)),
+        "FIREWORKS_WIDE": fireworks(1996, LANDSCAPE_BURSTS, (3.5, 7.5)),
         "BURST": burst,
         "ZIG": zig,
         "COMMITS": str(sum(weeks)),
