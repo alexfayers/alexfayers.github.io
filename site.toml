@@ -44,7 +44,7 @@ youtube = "https://music.youtube.com/@sreyaf"
 
 # Printed big on the LIVE ON box. Leave it out for no frequency.
 [radio]
-frequency = "164.0 FM"
+frequency = "90.4 FM"
 
 # The page picks one of these at random (YouTube video IDs), loads it
 # and tries to play it. Play and Next pick another.
