@@ -1,4 +1,16 @@
 (function () {
+  var START_TIMEOUT = 15000;
+  var AUTOPLAY_GRACE = 3000;
+  var POLL = 250;
+  var PLAY_LABEL = "Play a random track by BIRDSTARE";
+  var UI = {
+    autoplay: ["idle", "Tuning in", "Play", PLAY_LABEL],
+    starting: ["starting", "Starting up", "Play", PLAY_LABEL],
+    playing: ["playing", "", "Pause", "Pause music"],
+    paused: ["paused", "", "Play", PLAY_LABEL],
+    blocked: ["blocked", "Your browser blocked autoplay", "Press play", PLAY_LABEL],
+    failed: ["failed", "Couldn't start that track", "Retry", "Try starting the music again"]
+  };
   var plays = document.querySelectorAll('[data-act="play"]');
   var nexts = document.querySelectorAll('[data-act="next"]');
   var radio = document.getElementById("radio");
@@ -9,105 +21,184 @@
   var tracks = JSON.parse(plays[0].dataset.tracks);
   var origin = "https://www.youtube-nocookie.com";
   var frame = null;
-  var playing = false;
-  var loaded = false;
-  var wanted = "";
+  var mode = "autoplay";
+  var ready = false;
+  var queue = [];
+  var poll = 0;
   var timer = 0;
-  var settled = false;
-  var blocked = false;
+  var buffering = false;
+  var bad = {};
+  var index = -1;
   var started = false;
   var inView = true;
-  var current = "";
-  var last = -1;
-  var errors = 0;
 
   function place() {
     slap.hidden = !(started && !inView);
   }
 
-  function show(on, state, text) {
-    clearTimeout(timer);
-    settled = true;
-    blocked = false;
-    playing = on;
+  function setMode(next, text) {
+    var ui = UI[next];
+    var on = next === "playing";
+    mode = next;
     started = started || on;
-    state = state || (on ? "playing" : "paused");
-    radio.dataset.state = slap.dataset.state = state;
+    radio.dataset.state = slap.dataset.state = ui[0];
+    if (next === "starting") radio.setAttribute("aria-busy", "true");
+    else radio.removeAttribute("aria-busy");
     heading.textContent = on ? "On air" : "Off air";
-    title.textContent = current;
-    status.textContent = text || (on ? "Now playing: " : "Paused: ") + current;
+    title.textContent = tracks[index][1];
+    status.textContent = text || ui[1] || (on ? "Now playing: " : "Paused: ") + tracks[index][1];
     plays.forEach(function (button) {
       button.dataset.state = on ? "playing" : "paused";
-      button.querySelector("span").textContent = state === "blocked" ? "Press play" : on ? "Pause" : "Play";
-      button.setAttribute("aria-label", on ? "Pause music" : "Play a random track by BIRDSTARE");
+      button.querySelector("span").textContent = ui[2];
+      button.setAttribute("aria-label", ui[3]);
     });
     place();
   }
 
-  function block() {
-    show(false, "blocked", "Your browser blocked autoplay");
-    blocked = true;
-  }
-
-  function request(command, args) {
-    status.textContent = "Starting up";
+  function fail(text) {
     clearTimeout(timer);
-    timer = setTimeout(block, 6000);
-    if (loaded) send(command, args);
-    else wanted = command;
+    setMode("failed", text);
   }
 
-  function pick() {
-    var i;
-    do { i = Math.floor(Math.random() * tracks.length); } while (i === last && tracks.length > 1);
-    last = i;
-    current = tracks[i][1];
-    return tracks[i][0];
+  function block() {
+    if (mode === "autoplay") setMode("blocked");
+  }
+
+  function autoplayCheck() {
+    if (mode !== "autoplay") return;
+    if (buffering) timer = setTimeout(function () { if (mode === "autoplay") fail(); }, START_TIMEOUT - AUTOPLAY_GRACE);
+    else block();
+  }
+
+  function post(message) {
+    message.id = 1;
+    message.channel = "widget";
+    frame.contentWindow.postMessage(JSON.stringify(message), origin);
+  }
+
+  function listen() {
+    post({ event: "listening" });
   }
 
   function send(func, args) {
-    frame.contentWindow.postMessage(JSON.stringify({ event: "command", func: func, args: args || [] }), origin);
+    var message = { event: "command", func: func, args: args || [] };
+    if (ready) post(message);
+    else queue.push(message);
+  }
+
+  function pick() {
+    var open = [];
+    var i;
+    for (i = 0; i < tracks.length; i++) if (!bad[i] && i !== index) open.push(i);
+    if (!open.length && !bad[index]) open.push(index);
+    return open.length ? open[Math.floor(Math.random() * open.length)] : -1;
+  }
+
+  function load(i) {
+    index = i;
+    send("loadVideoById", [tracks[i][0]]);
+  }
+
+  function userStart(func, args) {
+    clearTimeout(timer);
+    setMode("starting");
+    send(func, args);
+    timer = setTimeout(fail, START_TIMEOUT);
+  }
+
+  function next() {
+    var i = pick();
+    if (i < 0) {
+      bad = {};
+      i = pick();
+    }
+    index = i;
+    userStart("loadVideoById", [tracks[i][0]]);
+  }
+
+  function skip() {
+    var i;
+    bad[index] = true;
+    i = pick();
+    if (i < 0) return fail("Couldn't play any tracks right now");
+    load(i);
+    clearTimeout(timer);
+    if (mode === "autoplay") {
+      buffering = false;
+      timer = setTimeout(autoplayCheck, AUTOPLAY_GRACE);
+    } else {
+      setMode("starting");
+      timer = setTimeout(fail, START_TIMEOUT);
+    }
+  }
+
+  function onReady() {
+    ready = true;
+    clearInterval(poll);
+    send("addEventListener", ["onStateChange"]);
+    send("addEventListener", ["onError"]);
+    queue.splice(0).forEach(post);
+    if (mode === "autoplay") {
+      clearTimeout(timer);
+      timer = setTimeout(autoplayCheck, AUTOPLAY_GRACE);
+    }
+  }
+
+  function onState(state) {
+    if (state === 1) {
+      clearTimeout(timer);
+      setMode("playing");
+    } else if (mode === "autoplay") buffering = state === 3;
+    else if (state === 0 && mode === "playing") next();
+    else if (state === 2 && mode === "playing") setMode("paused");
   }
 
   function open() {
+    index = pick();
     frame = document.createElement("iframe");
     frame.className = "yt";
     frame.title = "BIRDSTARE audio player";
     frame.tabIndex = -1;
     frame.allow = "autoplay";
     frame.referrerPolicy = "strict-origin-when-cross-origin";
-    frame.src = origin + "/embed/" + pick() + "?enablejsapi=1&autoplay=1&playsinline=1&origin=" + encodeURIComponent(location.origin);
-    frame.addEventListener("load", function () {
-      loaded = true;
-      setTimeout(function () { if (!settled) block(); }, 2500);
-      frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), origin);
-      if (wanted === "loadVideoById") send(wanted, [pick()]);
-      else if (wanted) send(wanted);
-    });
+    frame.src = origin + "/embed/" + tracks[index][0] + "?enablejsapi=1&autoplay=1&playsinline=1&origin=" + encodeURIComponent(location.origin);
+    frame.addEventListener("load", listen);
     document.body.appendChild(frame);
+    poll = setInterval(listen, POLL);
+    timer = setTimeout(function () { if (mode === "autoplay") fail(); }, START_TIMEOUT);
+    setMode("autoplay");
   }
 
   window.addEventListener("message", function (e) {
     if (!frame || e.source !== frame.contentWindow || e.origin !== origin) return;
     var data;
     try { data = JSON.parse(e.data); } catch (err) { return; }
-    var state = data.event === "onStateChange" ? data.info : data.info && data.info.playerState;
-    if (data.event === "onError" && ++errors >= tracks.length) show(false);
-    else if (data.event === "onError" || state === 0) send("loadVideoById", [pick()]);
-    else if (state === 1) { errors = 0; show(true); }
-    else if (settled && !blocked && (state === 2 || state === 5)) show(false);
+    var running = mode === "autoplay" || mode === "starting" || mode === "playing";
+    if (data.event === "readyToListen") listen();
+    else if (!ready && (data.event === "initialDelivery" || data.event === "onReady" || data.event === "alreadyInitialized")) onReady();
+    if (!ready) return;
+    if (data.event === "onError") {
+      if (running) skip();
+    } else if (data.event === "onStateChange") onState(data.info);
+    else if (data.info && data.info.playerState !== undefined) onState(data.info.playerState);
   });
 
-  nexts.forEach(function (next) {
-    next.addEventListener("click", function () {
-      request("loadVideoById", loaded ? [pick()] : []);
-    });
+  nexts.forEach(function (button) {
+    button.addEventListener("click", next);
   });
 
   plays.forEach(function (button) {
     button.addEventListener("click", function () {
-      if (playing) { show(false); send("pauseVideo"); }
-      else request("playVideo");
+      if (mode === "playing") {
+        send("pauseVideo");
+        setMode("paused");
+      } else if (mode === "failed") {
+        if (pick() < 0) {
+          bad = {};
+          index = pick();
+        }
+        userStart("loadVideoById", [tracks[index][0]]);
+      } else userStart("playVideo");
     });
   });
 

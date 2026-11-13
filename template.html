@@ -192,8 +192,8 @@ h2 {
 }
 .now { grid-area: now; margin-top: 6px; min-height: 1.25em; font: 800 13px/1.25 var(--grot); }
 .controls { grid-area: controls; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
-.radio[data-state="blocked"] { box-shadow: 0 0 0 3px #000, 0 0 0 5px #ffe81a; }
-.radio[data-state="blocked"] .play:not(.next) { padding: .55em .9em; font-size: clamp(14px, 4.2cqw, 17px); letter-spacing: .03em; box-shadow: 4px 4px 0 var(--red); }
+.radio:is([data-state="blocked"], [data-state="failed"]) { box-shadow: 0 0 0 3px #000, 0 0 0 5px #ffe81a; }
+.radio:is([data-state="blocked"], [data-state="failed"]) .play:not(.next) { padding: .55em .9em; font-size: clamp(14px, 4.2cqw, 17px); letter-spacing: .03em; box-shadow: 4px 4px 0 var(--red); }
 .bars { display: flex; align-items: flex-end; gap: 3px; height: 30px; }
 .radio .bars { grid-area: bars; align-self: end; gap: 4px; height: 44px; }
 .radio .bars i { width: 7px; }
