@@ -11,6 +11,8 @@ env:
   # Folder the redesign is built into, next to the old site at the root.
   # Set to "" to publish the redesign at the root instead.
   REDESIGN_PATH: new
+  # Folder for the clean version of the redesign.
+  CLEAN_PATH: clean
 
 permissions:
   contents: read
@@ -40,6 +42,7 @@ jobs:
           if [ -n "$REDESIGN_PATH" ]; then
             cp -r index.html assets _site/
             python3 build.py --out "_site/$REDESIGN_PATH/index.html"
+            python3 build.py --template template-clean.html --out "_site/$CLEAN_PATH/index.html"
           else
             python3 build.py --out _site/index.html
           fi

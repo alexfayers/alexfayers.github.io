@@ -145,7 +145,7 @@ def fireworks(seed: int, bursts: list[tuple[int, int, int, list[str], int]], siz
     return "".join(shapes)
 
 
-def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
+def render(cfg: dict[str, Any], data: dict[str, Any], template: str = "template.html") -> str:
     """Turn config and data into the finished page. Every value is escaped."""
     user = cfg["user"]
     repos: list[dict[str, Any]] = data["repos"]
@@ -242,7 +242,7 @@ def render(cfg: dict[str, Any], data: dict[str, Any]) -> str:
         else ""
     )
 
-    page = (HERE / "template.html").read_text(encoding="utf-8")
+    page = (HERE / template).read_text(encoding="utf-8")
     fields = {
         "THEME": theme,
         "SCRIPT": f"<script>{script}</script>",
@@ -280,6 +280,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--fixture", type=Path, help="build from this saved data instead of calling GitHub")
     parser.add_argument("--dump", type=Path, help="save the fetched data here")
+    parser.add_argument("--template", default="template.html", help="template file to render, next to build.py")
     parser.add_argument("--out", type=Path, default=HERE / "_site" / "index.html")
     args = parser.parse_args()
 
@@ -289,7 +290,7 @@ def main() -> None:
         args.dump.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(render(cfg, data), encoding="utf-8")
+    args.out.write_text(render(cfg, data, args.template), encoding="utf-8")
     print(f"wrote {args.out} ({len(data['repos'])} repos, {sum(data['weeks'])} commits)")
 
 

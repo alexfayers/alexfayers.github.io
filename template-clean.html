@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="{{NAME}}: what I've been building lately.">
+<title>mycode.rocks</title>
+<style>
+body { max-width: 40em; margin: 1em auto; padding: 0 1em; }
+.times { list-style: none; padding: 0; }
+.times li > * { display: inline-block; margin-right: 0.5em; }
+.times span:first-child { width: 4.5em; }
+.bar { width: 10em; }
+.bar i { display: block; height: 0.8em; background: currentColor; }
+</style>
+</head>
+<body>
+<h1>mycode.rocks</h1>
+<p>{{INTRO}}</p>
+<p>{{GITHUB}}</p>
+
+<h2>What I'm building</h2>
+<ul>{{REPOS}}</ul>
+<ul>{{FACTS}}</ul>
+
+<h2>Commits per week, last {{WEEKS}} weeks</h2>
+<ul class="times">{{ROWS}}</ul>
+
+<h2>Music</h2>
+<ul>{{MUSIC}}</ul>
+
+<h2>Elsewhere</h2>
+<ul>{{LINKS}}</ul>
+
+<hr>
+<p>Built {{DATE_SHORT}}.</p>
+</body>
+</html>
