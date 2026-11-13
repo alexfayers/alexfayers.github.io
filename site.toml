@@ -42,8 +42,8 @@ spotify = "https://open.spotify.com/artist/14GG8KwYVuFIG1Q95Jmrlj"
 apple = "https://music.apple.com/us/artist/sreyaf/1478141803"
 youtube = "https://music.youtube.com/@sreyaf"
 
-# The play button picks one of these at random (YouTube video IDs).
-# Nothing is requested from YouTube until the button is pressed.
+# The page picks one of these at random (YouTube video IDs), loads it
+# and tries to play it. Play and Next pick another.
 [[tracks]]
 id = "T2Xw_KojMXA"
 title = "20"
