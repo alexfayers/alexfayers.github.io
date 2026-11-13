@@ -169,6 +169,32 @@ h2 {
 .play[data-state="playing"] i { clip-path: none; background: linear-gradient(90deg, currentColor 34%, transparent 34% 66%, currentColor 66%); }
 .next i { order: 1; clip-path: polygon(0 0, 70% 50%, 70% 0, 100% 0, 100% 100%, 70% 100%, 70% 50%, 0 100%); }
 .now { margin-top: 8px; font-size: .85em; font-weight: 800; text-transform: none; }
+.sticker[hidden] { display: none; }
+.sticker {
+  position: fixed; left: 50%; bottom: 20px; translate: -50% 0; rotate: -1.5deg; z-index: 5; max-width: calc(100vw - 24px);
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--paper); color: var(--black);
+  border: 2px solid var(--black); box-shadow: 3px 3px 0 var(--black); font: 900 13px/1.1 var(--grot);
+}
+body:has(.sticker:not([hidden])) { padding-bottom: 84px; }
+.sticker p { min-width: 0; }
+.sticker b { display: block; color: var(--red); font-stretch: 125%; letter-spacing: .06em; text-transform: uppercase; }
+.sticker .title { display: block; margin-top: 3px; max-width: 20ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.sticker .play { margin-top: 0; padding: .45em .8em; font-size: 12px; background: var(--black); color: var(--paper); border-color: var(--black); box-shadow: none; }
+.sticker[data-state="tap"] { flex-direction: column; gap: 10px; width: min(440px, calc(100vw - 24px)); padding: 14px 18px; rotate: -2.5deg; font-size: 20px; text-align: center; }
+.sticker[data-state="tap"] b { font-size: 1.4em; }
+.sticker[data-state="tap"] :is(.bars, .title, [data-act="next"]) { display: none; }
+.bars { display: flex; align-items: flex-end; gap: 3px; height: 30px; }
+.bars i { width: 5px; height: 100%; background: var(--c); transform-origin: bottom; transform: scaleY(var(--h)); animation: bounce var(--d) ease-in-out var(--o) infinite alternate paused; }
+.sticker[data-state="playing"] .bars i { animation-play-state: running; }
+.bars i:nth-child(1) { --c: var(--red); --h: .5; --d: .83s; --o: -.2s; }
+.bars i:nth-child(2) { --c: var(--blue); --h: .85; --d: 1.27s; --o: -.9s; }
+.bars i:nth-child(3) { --c: var(--green); --h: .35; --d: .61s; --o: -.5s; }
+.bars i:nth-child(4) { --c: var(--pink); --h: 1; --d: 1.09s; --o: -.1s; }
+.bars i:nth-child(5) { --c: var(--amber); --h: .6; --d: .97s; --o: -.7s; }
+.bars i:nth-child(6) { --c: var(--sky); --h: .3; --d: .71s; --o: -.3s; }
+.bars i:nth-child(7) { --c: var(--purple); --h: .75; --d: 1.43s; --o: -1.1s; }
+@keyframes bounce { 0% { transform: scaleY(.15); } 22% { transform: scaleY(.85); } 37% { transform: scaleY(.35); } 71% { transform: scaleY(1); } 100% { transform: scaleY(.25); } }
+@media (prefers-reduced-motion: reduce) { .bars i { animation: none; } }
 .yt { position: absolute; left: -9999px; top: 0; width: 200px; height: 200px; border: 0; }
 .zig.green ul { display: block; }
 .zig.green li { display: inline; }
@@ -196,6 +222,8 @@ h2 {
 
 /* ---- landscape: front and back side by side ---- */
 @media (min-width: 900px) and (orientation: landscape) {
+  .sticker { left: 20px; translate: none; }
+  .sticker[data-state="tap"] { flex-direction: row; width: auto; }
   main { max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
   .burst { width: 44cqw; max-width: 260px; }
 }
@@ -294,6 +322,13 @@ h2 {
 
     <p class="small">THE FROG'S DECISION IS FINAL</p>
   </article>
+  </div>
+
+  <div id="sticker" class="sticker" role="group" aria-label="Music" data-state="paused" hidden>
+    <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    <p><b>Now playing</b><span class="title"></span></p>
+    <button class="play" type="button" data-act="play" aria-label="Play a random track by BIRDSTARE"><i aria-hidden="true"></i><span>Play</span></button>
+    <button class="play next" type="button" data-act="next" aria-label="Play another random track"><i aria-hidden="true"></i><span>Next</span></button>
   </div>
 </main>
 {{PLAYER_SCRIPT}}
